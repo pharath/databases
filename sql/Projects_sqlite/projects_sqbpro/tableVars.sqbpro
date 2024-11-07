@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/home/bra-ket/Downloads/Databases_material/sql/widom" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="989"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="Apply"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Apply" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths/><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table><table schema="main" name="College" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths/><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table><table schema="main" name="Student" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths/><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table></browse_table_settings></tab_browse><tab_sql><sql name="CollegeData.sql">delete from Student;
+delete from College;
+delete from Apply;
+
+insert into Student values (123, 'Amy', 3.9, 1000);
+insert into Student values (234, 'Bob', 3.6, 1500);
+insert into Student values (345, 'Craig', 3.5, 500);
+insert into Student values (456, 'Doris', 3.9, 1000);
+insert into Student values (567, 'Edward', 2.9, 2000);
+insert into Student values (678, 'Fay', 3.8, 200);
+insert into Student values (789, 'Gary', 3.4, 800);
+insert into Student values (987, 'Helen', 3.7, 800);
+insert into Student values (876, 'Irene', 3.9, 400);
+insert into Student values (765, 'Jay', 2.9, 1500);
+insert into Student values (654, 'Amy', 3.9, 1000);
+insert into Student values (543, 'Craig', 3.4, 2000);
+
+insert into College values ('Stanford', 'CA', 15000);
+insert into College values ('Berkeley', 'CA', 36000);
+insert into College values ('MIT', 'MA', 10000);
+insert into College values ('Cornell', 'NY', 21000);
+
+insert into Apply values (123, 'Stanford', 'CS', 'Y');
+insert into Apply values (123, 'Stanford', 'EE', 'N');
+insert into Apply values (123, 'Berkeley', 'CS', 'Y');
+insert into Apply values (123, 'Cornell', 'EE', 'Y');
+insert into Apply values (234, 'Berkeley', 'biology', 'N');
+insert into Apply values (345, 'MIT', 'bioengineering', 'Y');
+insert into Apply values (345, 'Cornell', 'bioengineering', 'N');
+insert into Apply values (345, 'Cornell', 'CS', 'Y');
+insert into Apply values (345, 'Cornell', 'EE', 'N');
+insert into Apply values (678, 'Stanford', 'history', 'Y');
+insert into Apply values (987, 'Stanford', 'CS', 'Y');
+insert into Apply values (987, 'Berkeley', 'CS', 'Y');
+insert into Apply values (876, 'Stanford', 'CS', 'N');
+insert into Apply values (876, 'MIT', 'biology', 'Y');
+insert into Apply values (876, 'MIT', 'marine biology', 'N');
+insert into Apply values (765, 'Stanford', 'history', 'Y');
+insert into Apply values (765, 'Cornell', 'history', 'N');
+insert into Apply values (765, 'Cornell', 'psychology', 'Y');
+insert into Apply values (543, 'MIT', 'CS', 'N');
+</sql><sql name="CollegeSchema.sql">drop table if exists College;
+drop table if exists Student;
+drop table if exists Apply;
+
+create table College(cName text, state text, enrollment int);
+create table Student(sID int, sName text, GPA real, sizeHS int);
+create table Apply(sID int, cName text, major text, decision text);
+</sql><sql name="BasicSelect.sql">/**************************************************************
+  BASIC SELECT STATEMENTS
+  Works for SQLite, MySQL, Postgres
+**************************************************************/
+
+/**************************************************************
+  IDs, names, and GPAs of students with GPA &gt; 3.6
+**************************************************************/
+
+select sID, sName, GPA
+from Student
+where GPA &gt; 3.6;
+
+/*** Same query without GPA ***/
+
+select sID, sName
+from Student
+where GPA &gt; 3.6;
+
+/**************************************************************
+  Student names and majors for which they've applied
+**************************************************************/
+
+select sName, major
+from Student, Apply
+where Student.sID = Apply.sID;
+
+/*** Same query with Distinct, note difference from algebra ***/
+
+select distinct sName, major
+from Student, Apply
+where Student.sID = Apply.sID;
+
+/**************************************************************
+  Names and GPAs of students with sizeHS &lt; 1000 applying to
+  CS at Stanford, and the application decision
+**************************************************************/
+
+select sname, GPA, decision
+from Student, Apply
+where Student.sID = Apply.sID
+  and sizeHS &lt; 1000 and major = 'CS' and cname = 'Stanford';
+
+/**************************************************************
+  All large campuses with CS applicants
+**************************************************************/
+
+select cName
+from College, Apply
+where College.cName = Apply.cName
+  and enrollment &gt; 20000 and major = 'CS';
+
+/*** Fix error ***/
+
+select College.cName
+from College, Apply
+where College.cName = Apply.cName
+  and enrollment &gt; 20000 and major = 'CS';
+
+/*** Add Distinct ***/
+
+select distinct College.cName
+from College, Apply
+where College.cName = Apply.cName
+  and enrollment &gt; 20000 and major = 'CS';
+
+/**************************************************************
+  Application information
+**************************************************************/
+
+select Student.sID, sName, GPA, Apply.cName, enrollment
+from Student, College, Apply
+where Apply.sID = Student.sID and Apply.cName = College.cName;
+
+/*** Sort by decreasing GPA ***/
+
+select Student.sID, sName, GPA, Apply.cName, enrollment
+from Student, College, Apply
+where Apply.sID = Student.sID and Apply.cName = College.cName
+order by GPA desc;
+
+/*** Then by increasing enrollment ***/
+
+select Student.sID, sName, GPA, Apply.cName, enrollment
+from Student, College, Apply
+where Apply.sID = Student.sID and Apply.cName = College.cName
+order by GPA desc, enrollment;
+
+/**************************************************************
+  Applicants to bio majors
+**************************************************************/
+
+select sID, major
+from Apply
+where major like '%bio%';
+
+/*** Same query with Select * ***/
+
+select *
+from Apply
+where major like '%bio%';
+
+/**************************************************************
+  Select * cross-product
+**************************************************************/
+
+select *
+from Student, College;
+
+/**************************************************************
+  Add scaled GPA based on sizeHS
+  Also note missing Where clause
+**************************************************************/
+
+select sID, sName, GPA, sizeHS, GPA*(sizeHS/1000.0)
+from Student;
+
+/*** Rename result attribute ***/
+
+select sID, sName, GPA, sizeHS, GPA*(sizeHS/1000.0) as scaledGPA
+from Student;
+</sql><sql name="TableVarsSetOps.sql">/**************************************************************
+  TABLE VARIABLES AND SET OPERATORS
+  Works for SQLite, Postgres
+  MySQL doesn't support Intersect or Except
+**************************************************************/
+
+/**************************************************************
+  Application information
+**************************************************************/
+
+select Student.sID, sName, GPA, Apply.cName, enrollment
+from Student, College, Apply
+where Apply.sID = Student.sID and Apply.cName = College.cName;
+
+/*** Introduce table variables ***/
+
+select S.sID, S.sName, S.GPA, A.cName, C.enrollment
+from Student S, College C, Apply A
+where A.sID = S.sID and A.cName = C.cName;
+
+/**************************************************************
+  Pairs of students with same GPA
+**************************************************************/
+
+select S1.sID, S1.sName, S1.GPA, S2.sID, S2.sName, S2.GPA
+from Student S1, Student S2
+where S1.GPA = S2.GPA;
+
+/*** Get rid of self-pairings ***/
+
+select S1.sID, S1.sName, S1.GPA, S2.sID, S2.sName, S2.GPA
+from Student S1, Student S2
+where S1.GPA = S2.GPA and S1.sID &lt;&gt; S2.sID;
+
+/*** Get rid of reverse-pairings ***/
+
+select S1.sID, S1.sName, S1.GPA, S2.sID, S2.sName, S2.GPA
+from Student S1, Student S2
+where S1.GPA = S2.GPA and S1.sID &lt; S2.sID;
+
+/**************************************************************
+  List of college names and student names
+**************************************************************/
+
+select cName from College
+union
+select sName from Student;
+
+/*** Add 'As name' to both sides ***/
+
+select cName as name from College
+union
+select sName as name from Student;
+
+/*** Change to Union All ***/
+
+select cName as name from College
+union all
+select sName as name from Student;
+
+/*** Notice not sorted any more (SQLite), add order by cName ***/
+
+select cName as name from College
+union all
+select sName as name from Student
+order by name;
+
+/**************************************************************
+  IDs of students who applied to both CS and EE
+**************************************************************/
+
+select sID from Apply where major = 'CS'
+intersect
+select sID from Apply where major = 'EE';
+
+/**************************************************************
+  IDs of students who applied to both CS and EE
+  Some systems don't support intersect
+**************************************************************/
+
+select A1.sID
+from Apply A1, Apply A2
+where A1.sID = A2.sID and A1.major = 'CS' and A2.major = 'EE';
+
+/*** Why so many duplicates? Look at Apply table ***/
+/*** Add Distinct ***/
+
+select distinct A1.sID
+from Apply A1, Apply A2
+where A1.sID = A2.sID and A1.major = 'CS' and A2.major = 'EE';
+
+/**************************************************************
+  IDs of students who applied to CS but not EE
+**************************************************************/
+
+select sID from Apply where major = 'CS'
+except
+select sID from Apply where major = 'EE';
+
+/**************************************************************
+  IDs of students who applied to CS but not EE
+  Some systems don't support except
+**************************************************************/
+
+select A1.sID
+from Apply A1, Apply A2
+where A1.sID = A2.sID and A1.major = 'CS' and A2.major &lt;&gt; 'EE';
+
+/*** Add Distinct ***/
+
+select distinct A1.sID
+from Apply A1, Apply A2
+where A1.sID = A2.sID and A1.major = 'CS' and A2.major &lt;&gt; 'EE';
+
+/*** Can't do it with constructs we have so far ***/
+</sql><sql name="SubqueriesWhere.sql">/**************************************************************
+  SUBQUERIES IN THE WHERE CLAUSE
+  Works for MySQL, Postgres
+  SQLite doesn't support All or Any
+**************************************************************/
+
+/**************************************************************
+  IDs and names of students applying to CS
+**************************************************************/
+
+select sID, sName
+from Student
+where sID in (select sID from Apply where major = 'CS');
+
+/**************************************************************
+  Same query written without 'In'
+**************************************************************/
+
+select sID, sName
+from Student, Apply
+where Student.sID = Apply.sID and major = 'CS';
+
+/*** Fix error ***/
+
+select Student.sID, sName
+from Student, Apply
+where Student.sID = Apply.sID and major = 'CS';
+
+/*** Remove duplicates ***/
+
+select distinct Student.sID, sName
+from Student, Apply
+where Student.sID = Apply.sID and major = 'CS';
+
+/**************************************************************
+  Just names of students applying to CS
+**************************************************************/
+
+select sName
+from Student
+where sID in (select sID from Apply where major = 'CS');
+
+/**************************************************************
+  Same query written without 'In'
+**************************************************************/
+
+select sName
+from Student, Apply
+where Student.sID = Apply.sID and major = 'CS';
+
+/*** Remove duplicates (still incorrect) ***/
+
+select distinct sName
+from Student, Apply
+where Student.sID = Apply.sID and major = 'CS';
+
+/**************************************************************
+  Duplicates are important: average GPA of CS applicants
+**************************************************************/
+
+select GPA
+from Student
+where sID in (select sID from Apply where major = 'CS');
+
+/**************************************************************
+  Alternative (incorrect) queries without 'In'
+**************************************************************/
+
+select GPA
+from Student, Apply
+where Student.sID = Apply.sID and major = 'CS';
+
+select distinct GPA
+from Student, Apply
+where Student.sID = Apply.sID and major = 'CS';
+
+/**************************************************************
+  Students who applied to CS but not EE
+  (query we used 'Except' for earlier)
+**************************************************************/
+
+select sID, sName
+from Student
+where sID in (select sID from Apply where major = 'CS')
+  and sID not in (select sID from Apply where major = 'EE');
+
+/*** Change to 'not sID in' ***/
+
+select sID, sName
+from Student
+where sID in (select sID from Apply where major = 'CS')
+  and not sID in (select sID from Apply where major = 'EE');
+
+/**************************************************************
+  Colleges such that some other college is in the same state
+**************************************************************/
+
+select cName, state
+from College C1
+where exists (select * from College C2
+              where C2.state = C1.state);
+
+/*** Fix error ***/
+
+select cName, state
+from College C1
+where exists (select * from College C2
+              where C2.state = C1.state and C2.cName &lt;&gt; C1.cName);
+
+/**************************************************************
+  Biggest college
+**************************************************************/
+
+select cName
+from College C1
+where not exists (select * from College C2
+                  where C2.enrollment &gt; C1.enrollment);
+
+/*** Similar: student with highest GPA  ***/
+
+select sName
+from Student C1
+where not exists (select * from Student C2
+                  where C2.GPA &gt; C1.GPA);
+
+/*** Add GPA ***/
+
+select sName, GPA
+from Student C1
+where not exists (select * from Student C2
+                  where C2.GPA &gt; C1.GPA);
+
+/**************************************************************
+  Highest GPA with no subquery
+**************************************************************/
+
+select S1.sName, S1.GPA
+from Student S1, Student S2
+where S1.GPA &gt; S2.GPA;
+
+/*** Remove duplicates (still incorrect) ***/
+
+select distinct S1.sName, S1.GPA
+from Student S1, Student S2
+where S1.GPA &gt; S2.GPA;
+
+/**************************************************************
+  Highest GPA using &quot;&gt;= all&quot;
+**************************************************************/
+
+select sName, GPA
+from Student
+where GPA &gt;= all (select GPA from Student);
+
+/**************************************************************
+  Higher GPA than all other students
+**************************************************************/
+
+select sName, GPA
+from Student S1
+where GPA &gt; all (select GPA from Student S2
+                 where S2.sID &lt;&gt; S1.sID);
+
+/*** Similar: higher enrollment than all other colleges  ***/
+
+select cName
+from College S1
+where enrollment &gt; all (select enrollment from College S2
+                        where S2.cName &lt;&gt; S1.cName);
+
+/*** Same query using 'Not &lt;= Any' ***/
+
+select cName
+from College S1
+where not enrollment &lt;= any (select enrollment from College S2
+                             where S2.cName &lt;&gt; S1.cName);
+
+/**************************************************************
+  Students not from the smallest HS
+**************************************************************/
+
+select sID, sName, sizeHS
+from Student
+where sizeHS &gt; any (select sizeHS from Student);
+
+/**************************************************************
+  Students not from the smallest HS
+  Some systems don't support Any/All
+**************************************************************/
+
+select sID, sName, sizeHS
+from Student S1
+where exists (select * from Student S2
+              where S2.sizeHS &lt; S1.sizeHS);
+
+/**************************************************************
+  Students who applied to CS but not EE
+**************************************************************/
+
+select sID, sName
+from Student
+where sID = any (select sID from Apply where major = 'CS')
+  and sID &lt;&gt; any (select sID from Apply where major = 'EE');
+
+/*** Subtle error, fix ***/
+
+select sID, sName
+from Student
+where sID = any (select sID from Apply where major = 'CS')
+  and not sID = any (select sID from Apply where major = 'EE');
+</sql><sql name="SQL 2">-- MAX alternative
+
+SELECT sName, sizeHS
+FROM Student S1
+WHERE EXISTS (SELECT * FROM Student S2
+				WHERE S1.sizeHS &gt; S2.sizeHS);
+
+-- mit EXCEPT
+
+/*
+SELECT Apply.sID FROM Apply WHERE major = 'CS'
+EXCEPT
+SELECT Apply.sID FROM Apply WHERE major = 'EE';
+*/
+
+-- dasselbe ohne EXCEPT
+
+/*
+SELECT sID
+FROM Student
+WHERE sID in (SELECT sID FROM Apply WHERE major = 'CS')
+	AND NOT sID in (SELECT sID FROM Apply WHERE major = 'EE');
+*/
+
+-- CS majors für GPA Durchschnitt, korrekt
+
+/*
+SELECT GPA
+FROM Student
+WHERE sID in (SELECT sID FROM Apply WHERE major = 'CS')
+*/
+
+-- dasselbe ohne subquery ist nicht möglich
+
+/*
+SELECT DISTINCT GPA
+FROM Student, Apply
+WHERE Student.sID = Apply.sID and Apply.major = 'CS'
+*/
+
+-- mit sID key gehts?
+
+/*
+SELECT DISTINCT Student.sID, GPA
+FROM Student, Apply
+WHERE Student.sID = Apply.sID and Apply.major = 'CS'
+*/</sql><current_tab id="5"/></tab_sql></sqlb_project>

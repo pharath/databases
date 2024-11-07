@@ -1,0 +1,730 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/home/bra-ket/Downloads/Databases_material/code/sql/databases/uebung2" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="998"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="Apply"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Apply" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths><column index="1" value="181"/><column index="2" value="181"/><column index="3" value="181"/><column index="4" value="181"/></column_widths><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table><table schema="main" name="College" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths/><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table><table schema="main" name="Student" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths/><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table><table schema="main" name="T1" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths/><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table><table schema="main" name="T2" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths/><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table><table schema="main" name="T3" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk=""><sort/><column_widths/><filter_values/><display_formats/><hidden_columns/><plot_y_axes/></table></browse_table_settings></tab_browse><tab_sql><sql name="CollegeData.sql">delete from Student;
+delete from College;
+delete from Apply;
+
+insert into Student values (123, 'Amy', 3.9, 1000);
+insert into Student values (234, 'Bob', 3.6, 1500);
+insert into Student values (345, 'Craig', 3.5, 500);
+insert into Student values (456, 'Doris', 3.9, 1000);
+insert into Student values (567, 'Edward', 2.9, 2000);
+insert into Student values (678, 'Fay', 3.8, 200);
+insert into Student values (789, 'Gary', 3.4, 800);
+insert into Student values (987, 'Helen', 3.7, 800);
+insert into Student values (876, 'Irene', 3.9, 400);
+insert into Student values (765, 'Jay', 2.9, 1500);
+insert into Student values (654, 'Amy', 3.9, 1000);
+insert into Student values (543, 'Craig', 3.4, 2000);
+
+insert into College values ('Stanford', 'CA', 15000);
+insert into College values ('Berkeley', 'CA', 36000);
+insert into College values ('MIT', 'MA', 10000);
+insert into College values ('Cornell', 'NY', 21000);
+
+insert into Apply values (123, 'Stanford', 'CS', 'Y');
+insert into Apply values (123, 'Stanford', 'EE', 'N');
+insert into Apply values (123, 'Berkeley', 'CS', 'Y');
+insert into Apply values (123, 'Cornell', 'EE', 'Y');
+insert into Apply values (234, 'Berkeley', 'biology', 'N');
+insert into Apply values (345, 'MIT', 'bioengineering', 'Y');
+insert into Apply values (345, 'Cornell', 'bioengineering', 'N');
+insert into Apply values (345, 'Cornell', 'CS', 'Y');
+insert into Apply values (345, 'Cornell', 'EE', 'N');
+insert into Apply values (678, 'Stanford', 'history', 'Y');
+insert into Apply values (987, 'Stanford', 'CS', 'Y');
+insert into Apply values (987, 'Berkeley', 'CS', 'Y');
+insert into Apply values (876, 'Stanford', 'CS', 'N');
+insert into Apply values (876, 'MIT', 'biology', 'Y');
+insert into Apply values (876, 'MIT', 'marine biology', 'N');
+insert into Apply values (765, 'Stanford', 'history', 'Y');
+insert into Apply values (765, 'Cornell', 'history', 'N');
+insert into Apply values (765, 'Cornell', 'psychology', 'Y');
+insert into Apply values (543, 'MIT', 'CS', 'N');
+</sql><sql name="CollegeSchema.sql">drop table if exists College;
+drop table if exists Student;
+drop table if exists Apply;
+
+create table College(cName text, state text, enrollment int);
+create table Student(sID int, sName text, GPA real, sizeHS int);
+create table Apply(sID int, cName text, major text, decision text);
+</sql><sql name="SQL 2">SELECT Student.sID, Student.sName, Student.GPA
+FROM Student
+WHERE Student.GPA &gt; 3.6;
+
+SELECT Student.sName, Apply.major
+FROM Student, Apply
+WHERE Student.sID = Apply.sID;
+
+SELECT DISTINCT Student.sName, Apply.major
+FROM Student, Apply
+WHERE Student.sID = Apply.sID;
+
+SELECT Student.sName, GPA, decision
+FROM Student, Apply
+WHERE Student.sID = Apply.sID and Student.sizeHS &lt; 1000 and Apply.major = 'CS';
+
+SELECT DISTINCT College.cName
+FROM College, Apply 
+WHERE Apply.cName = College.cName AND College.enrollment &gt; 10000 AND Apply.major = 'CS';
+
+SELECT *
+FROM Student, Apply, College
+WHERE Student.sID = Apply.sID AND Apply.cName = College.cName
+ORDER by Student.GPA DESC, enrollment ASC;
+
+SELECT Student.sName
+FROM Student, Apply
+WHERE Apply.major like '%bio%' and Student.sID = Apply.sID;
+
+SELECT *
+FROM Student, Apply
+WHERE Apply.major like '%bio%' and Student.sID = Apply.sID;
+
+SELECT *
+FROM Student, Apply;
+
+SELECT *, GPA*sizeHS/1000 as scaledGPA
+FROM Student;</sql><sql name="SQL 3">SELECT *
+FROM Student, Apply
+WHERE Student.sID = Student.sID;
+
+SELECT *
+FROM Student S, Apply A
+WHERE S.sID = A.sID;
+
+SELECT S1.sName, S2.sName
+FROM Student S1, Student S2
+WHERE S1.GPA = S2.GPA AND S1.sID &lt; s2.sID;
+
+SELECT sName as name
+from Student
+UNION
+SELECT cName as name
+FROM College;
+
+SELECT sName as name
+from Student
+UNION ALL
+SELECT cName as name
+FROM College;
+
+SELECT sName as name
+from Student
+UNION ALL
+SELECT cName as name
+FROM College
+ORDER BY name;
+
+SELECT Student.sID
+FROM Apply, Student
+WHERE Apply.major = 'CS' and Student.sID = Apply.sID
+INTERSECT
+SELECT Student.sID
+FROM Apply, Student
+WHERE Apply.major = 'EE' and Student.sID = Apply.sID;
+
+SELECT DISTINCT Student.sID
+FROM Apply A1, Apply A2, Student
+WHERE A1.major = 'CS' and Student.sID = A1.sID
+  AND A2.major = 'EE' AND Student.sID = A2.sID;
+  
+SELECT Student.sID
+FROM Apply, Student
+WHERE Apply.major = 'CS' AND Student.sID = Apply.sID
+EXCEPT
+SELECT Student.sID
+FROM Apply, Student
+WHERE Apply.major = 'EE' AND Student.sID = Apply.sID;
+
+SELECT Student.sID
+FROM Apply A1, Apply A2, Student
+WHERE A1.major = 'CS' AND Student.sID = A1.sID
+  and A2.major &lt;&gt; 'EE' AND Student.sID = A2.sID;
+
+SELECT DISTINCT Student.sID
+FROM Apply A1, Apply A2, Student
+WHERE A1.major = 'CS' AND Student.sID = A1.sID
+  and A2.major &lt;&gt; 'EE' AND Student.sID = A2.sID;</sql><sql name="SQL 4">SELECT Student.sID, sName
+from Student
+WHERE Student.sID in (SELECT Apply.sID from Apply WHERE Apply.major = 'CS');
+
+SELECT Student.sID, sName
+FROM Student, Apply
+WHERE Student.sID = Apply.sID and Apply.major = 'CS';
+
+SELECT DISTINCT Student.sID, sName
+FROM Student, Apply
+WHERE Student.sID = Apply.sID and Apply.major = 'CS';
+
+SELECT sName
+from Student
+WHERE Student.sID in (SELECT Apply.sID from Apply WHERE Apply.major = 'CS');
+
+SELECT sName
+FROM Student, Apply
+WHERE Student.sID = Apply.sID and Apply.major = 'CS';
+
+SELECT DISTINCT sName
+FROM Student, Apply
+WHERE Student.sID = Apply.sID and Apply.major = 'CS';
+
+SELECT sID, GPA
+FROM Student
+WHERE sID in (SELECT sID FROM Apply WHERE Apply.major = 'CS');
+
+--incorrect
+SELECT GPA
+FROM Student, Apply
+WHERE Student.sID = Apply.sID AND Apply.major = 'CS';
+
+--still incorrect
+SELECT DISTINCT GPA
+FROM Student, Apply
+WHERE Student.sID = Apply.sID AND Apply.major = 'CS';
+
+SELECT sID
+FROM Student
+WHERE sID in (SELECT sID FROM Apply WHERE Apply.major = 'CS')
+  and sID not in (SELECT sID FROM Apply WHERE Apply.major = 'EE');
+  
+SELECT sID
+FROM Student
+WHERE sID in (SELECT sID FROM Apply WHERE Apply.major = 'CS')
+  and not sID in (SELECT sID FROM Apply WHERE Apply.major = 'EE');
+
+SELECT c1.cName
+FROM College c1
+WHERE EXISTS (SELECT c2.cName from College c2 WHERE c1.state = c2.state AND c1.cName &lt;&gt; c2.cName);
+
+SELECT c1.cName, c1.enrollment
+FROM College c1
+WHERE NOT EXISTS (SELECT c2.cName from College c2 WHERE c1.enrollment &lt; c2.enrollment);
+
+SELECT s1.sName, s1.GPA
+FROM Student s1
+WHERE NOT EXISTS (SELECT s2.sName FROM Student s2 WHERE s2.GPA &gt; s1.GPA);
+
+--incorrect
+SELECT DISTINCT s1.sName, s1.GPA
+FROM Student s1, Student s2
+WHERE s2.GPA &lt; s1.GPA;
+/*
+--geht nicht in sqlite
+SELECT sName, GPA
+FROM Student 
+WHERE GPA &gt;= ALL (SELECT GPA FROM Student);
+
+--geht auch nicht
+SELECT s1.sName, s1.GPA
+FROM Student s1
+WHERE s1.GPA &gt; ALL (SELECT s2.GPA FROM Student AND s1.sID &lt;&gt; s2.sID);
+
+SELECT c1.cName, c1.enrollment
+FROM College c1
+WHERE c1.enrollment &gt; ALL (SELECT c2.enrollment from College c2 AND c1.cName &lt;&gt; c2.cName);
+
+SELECT c1.cName, c1.enrollment
+FROM College c1
+WHERE NOT c1.enrollment &lt;= ANY (SELECT c2.enrollment from College c2 AND c1.cName &lt;&gt; c2.cName);
+
+SELECT s1.sID
+FROM Student s1
+WHERE NOT s1.sizeHS &lt;= ALL (SELECT s2.sizeHS FROM Student s2);
+*/
+SELECT s1.sID
+FROM Student s1
+WHERE EXISTS (SELECT * FROM Student s2 WHERE s2.sizeHS &lt; s1.sizeHS);
+
+SELECT sID
+FROM Student
+WHERE sID = any (SELECT sID FROM Apply WHERE Apply.major = 'CS')
+  and sID &lt;&gt; all (SELECT sID FROM Apply WHERE Apply.major = 'EE');
+</sql><sql name="SQL 5">SELECT *, GPA*sizeHS/1000 as scaledgpa
+FROM Student
+WHERE scaledgpa - GPA &gt; 1 or GPA - scaledgpa &gt; 1;
+
+SELECT *, GPA*sizeHS/1000 as scaledgpa
+FROM Student
+WHERE abs(scaledgpa - GPA) &gt; 1;
+
+SELECT *
+FROM (SELECT *, GPA*sizeHS/1000 as scaledgpa FROM Student) G
+WHERE abs(G.scaledgpa - G.GPA) &gt; 1;
+
+SELECT DISTINCT College.cName, Student.GPA
+FROM Student, College, Apply
+WHERE Apply.cName = College.cName and Student.sID = Apply.sID
+	and Student.GPA &gt;= ALL (SELECT Student.GPA
+							FROM Student, Apply -- Achtung: nur 2 der 3 relations !
+							WHERE Student.sID = Apply.sID
+								AND Apply.cName = College.cName);
+								
+SELECT DISTINCT College.cName
+	(SELECT Student.GPA 
+	 FROM Student, Apply
+	 WHERE Student.sID = Apply.sID
+			and Student.GPA &gt;= ALL (SELECT Student.GPA
+									FROM Student, Apply
+									WHERE Student.sID = Apply.sID
+										AND Apply.cName = College.cName);
+FROM College;</sql><sql name="SQL 6">SELECT sName, major
+FROM Student, Apply
+WHERE Student.sID = Apply.sID;
+
+SELECT sName, major
+FROM Student INNER JOIN Apply
+ON Student.sID = Apply.sID;
+
+SELECT sName, major
+FROM Student JOIN Apply
+ON Student.sID = Apply.sID;
+
+SELECT sName, GPA
+FROM Student, Apply
+WHERE Apply.sID = Student.sID
+	AND Apply.major = 'CS' AND Student.sizeHS &lt; 1000 AND Apply.cName = 'Stanford';
+	
+SELECT sName, GPA
+FROM Student JOIN Apply
+ON Apply.sID = Student.sID
+WHERE Apply.major = 'CS' AND Student.sizeHS &lt; 1000 AND Apply.cName = 'Stanford';
+
+SELECT sName, GPA
+FROM Student JOIN Apply
+ON Apply.sID = Student.sID
+	AND Apply.major = 'CS' AND Student.sizeHS &lt; 1000 AND Apply.cName = 'Stanford';
+
+select Apply.sID, sName, GPA, Apply.cName, enrollment
+from Apply, Student, College
+where Apply.sID = Student.sID and Apply.cName = College.cName;
+
+select Apply.sID, sName, GPA, Apply.cName, enrollment
+from Apply JOIN Student JOIN College
+ON Apply.sID = Student.sID and Apply.cName = College.cName;
+
+SELECT Apply.sID, sName, GPA, Apply.cName, enrollment
+FROM (Apply JOIN Student ON Apply.sID = Student.sID) JOIN College ON College.cName = Apply.cName;
+
+SELECT DISTINCT sName, major
+FROM Student INNER JOIN Apply
+WHERE Student.sID = Apply.sID;
+
+SELECT DISTINCT sName, major
+FROM Student NATURAL JOIN Apply;
+
+SELECT *
+FROM Student NATURAL JOIN Apply;
+
+SELECT DISTINCT sID
+FROM Student NATURAL JOIN Apply;
+
+/* ambiguity error
+SELECT DISTINCT sID
+FROM Student, Apply;
+*/
+
+SELECT sName, GPA
+FROM Student JOIN Apply
+ON Student.sID = Apply.sID
+WHERE sizeHS &lt; 1000 AND major = 'CS' AND cName = 'Stanford';
+
+SELECT sName, GPA
+FROM Student NATURAL JOIN Apply
+WHERE sizeHS &lt; 1000 AND major = 'CS' AND cName = 'Stanford';
+
+SELECT sName, GPA
+FROM Student JOIN Apply USING(sID)
+WHERE sizeHS &lt; 1000 AND major = 'CS' AND cName = 'Stanford';
+
+SELECT S1.sID, S1.sName, S1.GPA, S2.sID, S2.sName, S2.GPA
+FROM Student S1, Student S2
+WHERE S1.GPA = S2.GPA AND S1.sID &lt; S2.sID;
+/* incorrect
+SELECT S1.sID, S1.sName, S1.GPA, S2.sID, S2.sName, S2.GPA
+FROM Student S1 JOIN Student S2 USING(GPA)
+ON S1.sID &lt; S2.sID;
+*/
+SELECT S1.sID, S1.sName, S1.GPA, S2.sID, S2.sName, S2.GPA
+FROM Student S1, Student S2 USING(GPA)
+WHERE S1.sID &lt; S2.sID;
+
+SELECT *
+FROM Student S1 NATURAL JOIN Student S2;
+
+SELECT * FROM Student;
+
+SELECT sName, sID, cName, major
+FROM Student NATURAL JOIN Apply; -- bad practice, use JOIN ... USING() instead
+
+select sName, sID, cName, major
+from Student inner join Apply using(sID);
+
+select sName, sID, cName, major
+from Student LEFT OUTER JOIN Apply using(sID);
+
+select sName, sID, cName, major
+from Student LEFT JOIN Apply using(sID);
+
+select sName, sID, cName, major
+from Student NATURAL LEFT OUTER JOIN Apply;  --asymmetric
+
+select sName, Student.sID, cName, major
+from Student, Apply
+WHERE Student.sID = Apply.sID
+UNION
+SELECT sName, Student.sID, NULL, NULL
+FROM Student
+WHERE sID not in (SELECT sID FROM Apply);
+/*
+insert into Apply values (321, 'MIT', 'history', 'N');
+insert into Apply values (321, 'MIT', 'psychology', 'Y');
+*/
+
+SELECT sName, sID, cName, major
+FROM Apply NATURAL LEFT OUTER JOIN Student;   --asymmetric
+--oder
+select sName, Student.sID, cName, major
+from Student, Apply
+WHERE Student.sID = Apply.sID
+UNION
+SELECT NULL, NULL, cName, major
+FROM Apply
+WHERE sID not in (SELECT sID FROM Student);
+/* not supported
+SELECT sName, sID, cName, major
+FROM Student NATURAL RIGHT OUTER JOIN Apply;
+
+SELECT sName, sID, cName, major
+FROM Student FULL OUTER JOIN Apply USING(sID);
+
+SELECT sName, sID, cName, major
+FROM Student NATURAL LEFT OUTER JOIN Apply
+UNION
+SELECT sName, sID, cName, major
+FROM Student NATURAL RIGHT JOIN Apply;
+*/
+select sName, Student.sID, cName, major
+from Student, Apply
+WHERE Student.sID = Apply.sID
+UNION
+SELECT NULL, sID, cName, major -- ACHTUNG: &quot;sID&quot; wird von FULL OUTER JOIN auch ausgegeben !
+FROM Apply
+WHERE sID not in (SELECT sID FROM Student)
+UNION
+SELECT sName, sID, NULL, NULL
+FROM Student
+WHERE sID not in (SELECT sID FROM Apply);
+/*
+create table T1 (A int, B int);
+create table T2 (B int, C int);
+create table T3 (A int, C int);
+insert into T1 values (1,2);
+insert into T2 values (2,3);
+insert into T3 values (4,5);
+
+select A,B,C
+from (T1 natural full outer join T2) natural full outer join T3;
+
+select A,B,C
+from T1 natural full outer join (T2 natural full outer join T3);
+
+drop table T1;
+drop table T2;
+drop table T3;
+*/</sql><sql name="SQL 7">/*
+SELECT avg(GPA)
+FROM Student;
+
+SELECT min(Student.GPA)
+FROM Student JOIN Apply USING(sID)
+WHERE Apply.major = 'CS';
+
+SELECT avg(Student.GPA)
+FROM Student JOIN Apply USING(sID)
+WHERE Apply.major = 'CS';
+-- ... ist incorrect, weil ...
+SELECT Student.GPA, sID
+FROM Student JOIN Apply USING(sID)
+WHERE Apply.major = 'CS'; -- also manche sID doppelt !
+-- fix error
+SELECT avg(Student.GPA)
+FROM Student
+WHERE sID in (SELECT sID FROM Apply WHERE Apply.major = 'CS');
+
+SELECT count(*)
+FROM College
+WHERE enrollment &gt; 15000;
+
+--incorrect
+SELECT count(*)
+FROM Apply
+WHERE cName = 'Cornell';
+--because
+SELECT *
+FROM Apply
+WHERE cName = 'Cornell';
+--fix
+SELECT count(DISTINCT sID)
+FROM Apply
+WHERE cName = 'Cornell';
+
+SELECT *
+FROM Student S1
+WHERE (SELECT count(*) FROM Student S2 WHERE S1.GPA = S2.GPA AND S1.sID &lt;&gt; S2.sID) = 
+		(SELECT count(*) FROM Student S2 WHERE S1.sizeHS = S2.sizeHS AND S1.sID &lt;&gt; S2.sID); 
+		
+SELECT CS.avgGPA - nonCS.avgGPA
+FROM (SELECT avg(GPA) as avgGPA FROM Student JOIN Apply USING(sID) WHERE Apply.major = 'CS') as CS, 
+	(SELECT avg(GPA) as avgGPA FROM Student JOIN Apply USING(sID) WHERE Apply.major &lt;&gt; 'CS') as nonCS;
+
+SELECT (SELECT avg(GPA) as avgGPA FROM Student JOIN Apply USING(sID) WHERE Apply.major = 'CS') -
+	(SELECT avg(GPA) as avgGPA FROM Student JOIN Apply USING(sID) WHERE Apply.major &lt;&gt; 'CS') as d
+FROM Student;
+
+SELECT DISTINCT (SELECT avg(GPA) as avgGPA FROM Student JOIN Apply USING(sID) WHERE Apply.major = 'CS') -
+	(SELECT avg(GPA) as avgGPA FROM Student JOIN Apply USING(sID) WHERE Apply.major &lt;&gt; 'CS') as d
+FROM Student;
+
+SELECT &quot;bla&quot; as d -- &quot;bla&quot; kann irgendeine Expression sein
+FROM Student;
+
+--mein Versuch (ohne GROUP BY, was wir noch nicht hatten!)
+SELECT C1.cName, (SELECT count(*) FROM Apply WHERE Apply.cName = C1.cName) as App_number
+FROM College C1;
+
+SELECT cName, count(*)
+FROM Apply
+GROUP BY cName;           -- Widom: GROUP BY only used in conjunction with aggregation !
+
+SELECT *
+FROM Apply
+ORDER BY cName;
+
+SELECT state, sum(enrollment)
+FROM College
+GROUP BY state;
+
+SELECT cName, major, min(GPA), max(GPA)
+FROM Student JOIN Apply USING(sID)
+GROUP BY cName, major;
+
+SELECT cName, major, GPA
+FROM Student JOIN Apply USING(sID)
+ORDER BY cName, major;
+
+SELECT max(mx - mn) 
+FROM (SELECT cName, major, max(GPA) as mx, min(GPA) as mn
+FROM Student JOIN Apply USING(sID)
+GROUP BY cName, major) as q;
+
+SELECT sID, count(DISTINCT cName) -- Achtung: DISTINCT nicht vergessen !
+FROM Student JOIN Apply USING(sID)
+GROUP by sID;
+
+SELECT sID, cName
+FROM Student JOIN Apply USING(sID)
+ORDER by sID;
+
+SELECT sID, count(DISTINCT cName)
+FROM Student JOIN Apply USING(sID)
+GROUP by sID;
+
+SELECT sID, sName, count(DISTINCT cName)
+FROM Student JOIN Apply USING(sID)
+GROUP by sID;
+
+SELECT sID, sName, cName
+FROM Student JOIN Apply USING(sID)
+ORDER by sID;
+
+SELECT sID, sName, count(DISTINCT cName)
+FROM Student JOIN Apply USING(sID)
+GROUP by sID;
+
+SELECT sID, sName, count(DISTINCT cName), cName
+FROM Student JOIN Apply USING(sID)
+GROUP by sID;
+
+SELECT sID, sName, cName
+FROM Student JOIN Apply USING(sID)
+ORDER by sID;
+*/
+SELECT sID, count(DISTINCT cName)
+FROM Student LEFT OUTER JOIN Apply USING(sID) -- wenn du nicht mehr Rhfolge weißt, einfach beides probieren und Ergebnis sehen -- bei LEFT ist links die Relation mit mehr Einträgen !
+GROUP by sID;
+--oder
+SELECT sID, count(DISTINCT cName)
+FROM Student JOIN Apply USING(sID)
+GROUP by sID
+UNION
+SELECT sID, 0
+FROM Student
+WHERE sID NOT in (SELECT sID FROM Student JOIN Apply USING(sID));
+
+SELECT cName, count(sID)
+FROM Apply
+GROUP by cName
+HAVING count(*) &lt; 5; -- nicht count(sID), weil sID kann sich öfter für cName bewerben !
+
+SELECT DISTINCT cName
+FROM Apply A1
+WHERE 5 &gt; (SELECT count(*) FROM Apply A2 WHERE A1.cName = A2.cName);
+
+SELECT cName, count(sID)
+FROM Apply
+GROUP by cName
+HAVING count(DISTINCT sID) &lt; 5;
+
+SELECT major, max(GPA)
+FROM Apply JOIN Student USING(sID)
+GROUP by major
+HAVING max(GPA) &lt; (SELECT avg(GPA) FROM Student);</sql><sql name="SQL 8">/*
+insert into Student values (432, 'Kevin', null, 1500);
+insert into Student values (321, 'Lori', null, 2500);
+*/
+select * from Student;
+
+SELECT *
+FROM Student
+WHERE GPA &gt; 3.5;
+
+SELECT *
+FROM Student
+WHERE GPA &lt;= 3.5;
+
+SELECT *
+FROM Student
+WHERE GPA &gt; 3.5 or GPA &lt;= 3.5;
+
+SELECT *
+FROM Student;
+
+SELECT *
+FROM Student
+WHERE GPA &gt; 3.5 or GPA &lt;= 3.5 or GPA is NULL;
+
+SELECT *
+FROM Student
+WHERE GPA &gt; 3.5 or sizeHS &lt; 1600;
+
+SELECT *
+FROM Student
+WHERE GPA &gt; 3.5 or sizeHS &lt; 1600 or sizeHS &gt;= 1600; -- in sizeHS gibts keine NULL, sodass die sizeHS Tautologie ALLE Tupel umfasst (im Ggs. zur GPA Tautologie vorher, die NULLs hatte !)
+
+SELECT count(*)
+FROM Student
+WHERE GPA is not NULL;
+
+SELECT count(DISTINCT GPA)
+FROM Student
+WHERE GPA in (SELECT GPA FROM Student WHERE GPA is not NULL);
+--oder
+SELECT count(DISTINCT GPA)
+FROM Student
+WHERE GPA is not NULL;
+
+SELECT count(DISTINCT GPA)
+FROM Student;   -- NULLs werden also nicht als eigener GPA Wert gezählt
+
+SELECT DISTINCT GPA
+FROM Student;   -- NULL taucht aber in dieser query auf, obwohl es nicht mit count gezählt wird !</sql><sql name="SQL 9">/*
+insert into College values ('Carnegie Mellon', 'PA', 11500);
+*/
+SELECT *
+FROM Student LEFT OUTER JOIN Apply USING(sID)
+WHERE major is NULL;
+--or
+SELECT *
+FROM Student
+WHERE sID not in (SELECT sID FROM Apply);
+/*
+INSERT INTO Apply
+	SELECT sID, 'Carnegie Mellon', 'CS', NULL
+	FROM Student
+	WHERE sID not in (SELECT sID FROM Apply);
+
+INSERT INTO Apply
+	SELECT sID, 'Carnegie Mellon', 'EE', 'Y'
+	FROM Student JOIN Apply USING(sID)
+	WHERE major = 'EE' AND decision = 'N';
+*/
+--or
+select *
+from Student
+where sID in (select sID from Apply
+              where major = 'EE' and decision = 'N');
+--incorrect			  
+SELECT sID
+FROM Student
+WHERE 2 &lt; (SELECT count(DISTINCT major) FROM Apply GROUP by sID);
+
+select sID, count(distinct major)
+from Apply
+group by sID
+having count(distinct major) &gt; 2;
+
+DELETE FROM Student
+WHERE sID in
+	(select sID
+	from Apply
+	group by sID
+	having count(distinct major) &gt; 2);
+--folgende Query geht bei manchen DBMS nicht	
+DELETE FROM Apply
+WHERE sID in
+	(select sID
+	from Apply
+	group by sID
+	having count(distinct major) &gt; 2);
+
+SELECT cName
+FROM College
+WHERE cName NOT in (SELECT cName FROM Apply WHERE major = 'CS');
+
+DELETE FROM College
+WHERE cName NOT in (SELECT cName FROM Apply WHERE major = 'CS');
+
+SELECT Student.sID, GPA, major, decision
+FROM Apply, Student
+WHERE Apply.sID = Student.sID AND GPA &lt; 3.6 AND cName = 'Carnegie Mellon';
+-- or
+select * from Apply
+where cName = 'Carnegie Mellon'
+  and sID in (select sID from Student where GPA &lt; 3.6);
+
+UPDATE Apply
+SET decision = 'Y', major = 'economics'
+WHERE sID in
+	(SELECT Student.sID FROM Apply, Student 
+	WHERE Apply.sID = Student.sID 
+		AND GPA &lt; 3.6 AND cName = 'Carnegie Mellon');
+/*
+SELECT *
+FROM Apply JOIN Student USING(sID)
+WHERE GPA &gt;= ALL (SELECT GPA FROM Apply JOIN Student USING(sID) WHERE major = 'EE')
+	and major = 'EE';
+-- or
+
+SELECT * FROM Apply
+WHERE major = 'EE' and 
+	sid in (SELECT sid FROM student 
+            WHERE gpa &gt;= ALL (SELECT gpa 
+                              FROM student 
+                              WHERE sid IN (SELECT sid 
+                                            FROM apply
+                                            WHERE major = 'EE')));
+
+UPDATE Apply
+SET major = 'CSE'
+WHERE major = 'EE' and 
+	sid in (SELECT sid FROM student 
+            WHERE gpa &gt;= ALL (SELECT gpa 
+                              FROM student 
+                              WHERE sid IN (SELECT sid 
+                                            FROM apply
+                                            WHERE major = 'EE'))));
+*/
+UPDATE Student
+SET GPA = (SELECT max(GPA) FROM Student), sizeHS = (SELECT min(sizeHS) FROM Student);
+
+UPDATE Apply
+SET decision = 'Y';</sql><current_tab id="9"/></tab_sql></sqlb_project>

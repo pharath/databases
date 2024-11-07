@@ -1,0 +1,30 @@
+{
+  "type":"object",
+  "properties": {
+    "Books": {
+      "type":"array",
+      "items": {
+        "type":"object",
+        "properties": {
+          "title":{"type":"string"},
+          "isbn":{"type":"string", "pattern":"ISBN*"},
+          "Price":{
+            "type":"integer",
+            "minimum":30,
+            "maximum":90
+          },
+          "author":{"type":"string"} } }
+    },
+    "Magazines": {
+      "type":"array",
+      "minItems":0,
+      "maxItems":3,
+      "items": {
+        "type":"object",
+        "properties": {
+          "author":{"type":"string"},
+          "title":{"type":"string"},
+          "month":{"type":"string", "enum":["Jan", "Feb"]}} }
+    }
+  }
+}
